@@ -16,69 +16,85 @@ function deckCreate() {
   }
 }
 
-function getRandomPosition(mazo) {
-  return Math.floor(Math.random() * (mazo.length - 1));
+
+function getRandomSuitPosition(deck) {
+ return Math.floor(Math.random() * 11);
 }
-//TODO: Refactoriza esto a darCarta : return Carta aleatoria
-function repartirCarta(mazo){
 
-  var ran = getRandomPosition(mazo);
+function getRandomDeckPosition(deck) {
+  return Math.floor(Math.random() * (deck.length - 1));
+}
 
-  while(mazo[ran] === 'elegido'){
-    ran = getRandomPosition(mazo);
+//TODO: Refactoriza esto a darCarta : return posicion aleatoria
+function darCarta(deck){
+
+  let ranDeck = getRandomDeckPosition(deck);
+  let ranSuit = getRandomSuitPosition(deck);
+  while(deck[ranDeck][ranSuit] === 'elegido'){
+    ranDeck = getRandomDeckPosition(deck);
+    ranSuit = getRandomSuitPosition(deck);
   }
-  ranFinal= mazo[ran];
-  mazo[ran]= 'elegido';
+  let finalRandom = deck[ranDeck][ranSuit];
+  deck[ranDeck][ranSuit]= 'elegido';
+
+  return finalRandom;
+}
+
+function checkCard(finalRandom){
+  if((finalRandom == 'ASC') || (finalRandom == 'AST') || (finalRandom == 'ASP') || (finalRandom == 'ASR')){
+    finalRandom = prompt('Introduzca valor de AS (1 u 11)');
+  }
+  return finalRandom;
 }
 
 function juego(){
-  repartirCarta(deck);
-  console.log('Carta del jugador = ', ranFinal);
-  if((ranFinal == 'ASC') || (ranFinal == 'AST') || (ranFinal == 'ASP') || (ranFinal == 'ASR')){
-    ranFinal = prompt('Introduzca valor de AS (1 u 11)');
-  }
-  result += Number.parseInt(ranFinal);
 
-  repartirCarta(deck);
-  console.log('Carta del crupier =', ranFinal);
-  if((ranFinal == 'ASC') || (ranFinal == 'AST') || (ranFinal == 'ASP') || (ranFinal == 'ASR')){
-    ranFinal = prompt('Introduzca valor de AS (1 u 11)');
-    console.log('Valor de AS elegido= ', ranFinal);
-  }
-  result += Number.parseInt(ranFinal);
+  let finalRandom = darCarta(deck);
+  console.log('Carta del jugador = ', finalRandom);
+  finalRandom = checkCard(finalRandom);
+  result += Number.parseInt(finalRandom);
 
-  console.log('El result es = ', result);
-  
-  /*for(let k=0; k<deck.length; k++){
-    console.log(deck[k]);
-  }*/
+  finalRandom = darCarta(deck);
+  console.log('Carta del crupier =', finalRandom);
+  finalRandom = checkCard(finalRandom);
+  result += Number.parseInt(finalRandom);
+
+  console.log('El resultado es = ', result);
+
 }
-//Main del programa
+
+
+/**Main del programa */
+
+function main(){
+
+  let continua = false;
+  deckCreate();
+  juego();
+
+  while(result < 21){
+      continua = confirm('¿Deseas recibir carta?');
+      if(continua){
+        juego();
+      }
+      else{
+        console.log('Te plantaste!!');
+        break;
+      }
+  }
+
+  if(result == 21){
+    console.log('Ganaste!!');
+  }
+
+  else{
+    console.log('Perdiste!!');
+  }
+}
+
 let result = 0;
-let ranFinal;
 let deck = [];
-let suitId = 0;
-let count = 2;
-let continua = false;
+main();
 
-deckCreate();
-juego();
 
-while(result < 21){
-    continua = confirm('¿Desea recibir carta?');
-    if(continua){
-      juego();
-    }
-    else{
-      console.log('Perdiste!!');
-      break;
-    }
-}
-
-if(result == 21){
-  console.log('Has ganado!!');
-}
-
-else{
-  console.log('Perdiste!!');
 }
