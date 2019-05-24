@@ -1,110 +1,70 @@
-/**
- * Programa Juego blackjack
- * Alba Cruz Torres
- * Dario Algo Algo
- */
+function createSuit(suit) {
+  let deck = [];
+  deck[0] = 'AS' + suit;
 
-function crearMazo(j, contador) {
-  j++;
-  switch (j) {
-    case 1:
-      for (let i = 0; i < 1; i++) {
-        mazo[i] = 'AST';
-      }
+  for (let i = 1; i < 12; i++) {
+    // las cartas comienzan en uno el array en cero
+    deck[i] = (i + 1) + suit;
+  }
+  return deck;
+}
 
-      for (let i = 1; i < 12; i++) {
-        mazo[i] = contador + 'T';
-        contador++;
-      }
-      crearMazo(j);
-      break;
-
-    case 2:
-      contador = 2;
-      for (let i = 12; i < 13; i++) {
-        mazo[i] = 'ASC';
-      }
-
-      for (let i = 13; i < 24; i++) {
-        mazo[i] = contador + 'C';
-        contador++;
-      }
-      crearMazo(j, contador);
-      break;
-
-    case 3:
-      contador = 2;
-      for (let i = 24; i < 25; i++) {
-        mazo[i] = 'ASR';
-      }
-
-      for (let i = 25; i < 36; i++) {
-        mazo[i] = contador + 'R';
-        contador++;
-      }
-      crearMazo(j, contador);
-      break;
-
-    default:
-      contador = 2;
-      for (let i = 36; i < 37; i++) {
-        mazo[i] = 'ASP';
-      }
-
-      for (let i = 37; i < 48; i++) {
-        mazo[i] = contador + 'P';
-        contador++;
-      }
-
+function deckCreate() {
+  let suits = ['T', 'C', 'R', 'P'];
+  for(let i = 0; i < suits.length; i++) {
+    deck.push(createSuit(suits[i]));
   }
 }
 
+function getRandomPosition(mazo) {
+  return Math.floor(Math.random() * (mazo.length - 1));
+}
+//TODO: Refactoriza esto a darCarta : return Carta aleatoria
 function repartirCarta(mazo){
-  var min = 0;
-  var max = mazo.length-1;
-  var ran = Math.floor(Math.random() * (max - min)) + min;
 
-  while(mazo[ran] == 'elegido'){
-    ran = Math.floor(Math.random() * (max - min)) + min;
+  var ran = getRandomPosition(mazo);
+
+  while(mazo[ran] === 'elegido'){
+    ran = getRandomPosition(mazo);
   }
   ranFinal= mazo[ran];
-  mazo[ran]= "elegido";
+  mazo[ran]= 'elegido';
 }
 
 function juego(){
-  repartirCarta(mazo);
+  repartirCarta(deck);
   console.log('Carta del jugador = ', ranFinal);
   if((ranFinal == 'ASC') || (ranFinal == 'AST') || (ranFinal == 'ASP') || (ranFinal == 'ASR')){
     ranFinal = prompt('Introduzca valor de AS (1 u 11)');
   }
-  resultado += Number.parseInt(ranFinal);
+  result += Number.parseInt(ranFinal);
 
-  repartirCarta(mazo);
+  repartirCarta(deck);
   console.log('Carta del crupier =', ranFinal);
   if((ranFinal == 'ASC') || (ranFinal == 'AST') || (ranFinal == 'ASP') || (ranFinal == 'ASR')){
     ranFinal = prompt('Introduzca valor de AS (1 u 11)');
     console.log('Valor de AS elegido= ', ranFinal);
   }
-  resultado += Number.parseInt(ranFinal);
+  result += Number.parseInt(ranFinal);
 
-  console.log('El resultado es = ', resultado);
+  console.log('El result es = ', result);
   
-  /*for(let k=0; k<mazo.length; k++){
-    console.log(mazo[k]);
+  /*for(let k=0; k<deck.length; k++){
+    console.log(deck[k]);
   }*/
 }
-
-let resultado = 0;
+//Main del programa
+let result = 0;
 let ranFinal;
-let mazo = [];
-let j = 0;
-let contador = 2;
+let deck = [];
+let suitId = 0;
+let count = 2;
 let continua = false;
 
-crearMazo(j, contador);
+deckCreate();
 juego();
 
-while(resultado < 21){
+while(result < 21){
     continua = confirm('¿Desea recibir carta?');
     if(continua){
       juego();
@@ -115,11 +75,10 @@ while(resultado < 21){
     }
 }
 
-if(resultado == 21){
+if(result == 21){
   console.log('Has ganado!!');
 }
 
 else{
   console.log('Perdiste!!');
 }
-
